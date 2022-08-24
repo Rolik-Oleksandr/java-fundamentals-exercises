@@ -84,12 +84,6 @@ class ArrayListTest {
                 .isThrownBy(() -> arrayList.getFirst());
     }
 
-    @Test
-    @Order(8)
-    void getLastOfEmptyList() {
-        assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> arrayList.getLast());
-    }
 
     @Test
     @Order(9)
