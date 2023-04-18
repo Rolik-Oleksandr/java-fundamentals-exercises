@@ -11,6 +11,8 @@ import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 /**
  * {@link CrazyStreams} is an exercise class. Each method represent some operation with a collection of accounts that
  * should be implemented using Stream API. Every method that is not implemented yet throws
@@ -161,7 +163,8 @@ public class CrazyStreams {
      * @return a map where key is a last name and value is a set of first names
      */
     public Map<String, Set<String>> groupFirstNamesByLastNames() {
-        throw new ExerciseNotCompletedException();
+        return accounts.stream()
+                .collect(groupingBy(Account::getLastName, mapping(Account::getFirstName, toSet())));
     }
 
     /**
