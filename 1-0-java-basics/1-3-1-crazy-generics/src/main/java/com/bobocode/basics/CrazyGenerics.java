@@ -100,8 +100,8 @@ public class CrazyGenerics {
      *
      * @param <T> – the type of objects that can be processed
      */
-    interface StrictProcessor { // todo: make it generic
-        void process(Object obj);
+    interface StrictProcessor<T extends Serializable & Comparable<? super T>> { // todo: make it generic
+        void process(T obj);
     }
 
 
@@ -112,10 +112,10 @@ public class CrazyGenerics {
      * @param <T> – a type of the entity that should be a subclass of {@link BaseEntity}
      * @param <C> – a type of any collection
      */
-    interface CollectionRepository { // todo: update interface according to the javadoc
-        void save(Object entity);
+    interface CollectionRepository<T extends BaseEntity, C extends Collection<T>> { // todo: update interface according to the javadoc
+        void save(T entity);
 
-        Collection<Object> getEntityCollection();
+        C getEntityCollection();
     }
 
     /**
@@ -124,7 +124,7 @@ public class CrazyGenerics {
      *
      * @param <T> – a type of the entity that should be a subclass of {@link BaseEntity}
      */
-    interface ListRepository { // todo: update interface according to the javadoc
+    interface ListRepository<T extends BaseEntity> extends CollectionRepository<T, List<T>> { // todo: update interface according to the javadoc
     }
 
     /**
