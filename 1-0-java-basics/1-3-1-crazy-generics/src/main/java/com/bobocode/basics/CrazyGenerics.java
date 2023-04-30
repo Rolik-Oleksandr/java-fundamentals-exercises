@@ -5,10 +5,8 @@ import com.bobocode.util.ExerciseNotCompletedException;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * {@link CrazyGenerics} is an exercise class. It consists of classes, interfaces and methods that should be updated
@@ -149,7 +147,7 @@ public class CrazyGenerics {
     /**
      * {@link CollectionUtil} is an util class that provides various generic helper methods.
      */
-    static class CollectionUtil {
+    class CollectionUtil {
         static final Comparator<BaseEntity> CREATED_ON_COMPARATOR = Comparator.comparing(BaseEntity::getCreatedOn);
 
         /**
@@ -184,8 +182,9 @@ public class CrazyGenerics {
          * @param validationPredicate criteria for validation
          * @return true if all entities fit validation criteria
          */
-        public static boolean isValidCollection() {
-            throw new ExerciseNotCompletedException(); // todo: add method parameters and implement the logic
+        public static boolean isValidCollection(Collection<? extends BaseEntity> entities, Predicate<? super BaseEntity> validationPredicate) {
+            return  entities.stream()
+                    .anyMatch(validationPredicate);  // todo: add method parameters and implement the logic
         }
 
         /**
@@ -198,8 +197,10 @@ public class CrazyGenerics {
          * @param <T>          entity type
          * @return true if entities list contains target entity more than once
          */
-        public static boolean hasDuplicates() {
-            throw new ExerciseNotCompletedException(); // todo: update method signature and implement it
+        public static <T extends BaseEntity> boolean hasDuplicates(Collection<T> entities, T targetEntity) {
+            return entities.stream()
+                    .filter(e -> e.getUuid().equals(targetEntity.getUuid()))
+                    .count() > 1;            // todo: update method signature and implement it
         }
 
         /**
@@ -211,6 +212,20 @@ public class CrazyGenerics {
          * @param <T>        type of elements
          * @return optional max value
          */
+        public static <T> Optional<T> findMax(Iterable<T> elements, Comparator<? super T> comparator) {
+            var iterator = elements.iterator();
+            if (!iterator.hasNext()) {
+                return Optional.empty();
+            }
+            var max = iterator.next();
+            while (iterator.hasNext()) {
+                var element = iterator.next();
+                if (comparator.compare(element, max) > 0) {
+                    max = element;
+                }
+            }
+            return Optional.of(max);
+        }
         // todo: create a method and implement its logic manually without using util method from JDK
 
         /**
@@ -225,6 +240,10 @@ public class CrazyGenerics {
          * @param <T>      entity type
          * @return an entity from the given collection that has the max createdOn value
          */
+        public static <T extends BaseEntity> T findMostRecentlyCreatedEntity(Collection<T> entities) {
+            return findMax(entities, CREATED_ON_COMPARATOR)
+                    .orElseThrow();
+        }
         // todo: create a method according to JavaDoc and implement it using previous method
 
         /**
@@ -239,8 +258,12 @@ public class CrazyGenerics {
         public static void swap(List<?> elements, int i, int j) {
             Objects.checkIndex(i, elements.size());
             Objects.checkIndex(j, elements.size());
-            throw new ExerciseNotCompletedException(); // todo: complete method implementation 
+            swapHelper(elements, i, j); // todo: complete method implementation
         }
 
-    }
+        private static <T> void swapHelper(List<T> elements, int i, int j) {
+            T temp = elements.get(i);
+            elements.set(i, elements.get(j));
+            elements.set(j, temp);
+        }
 }
