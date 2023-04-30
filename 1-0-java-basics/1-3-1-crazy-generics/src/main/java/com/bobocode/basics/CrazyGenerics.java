@@ -124,7 +124,8 @@ public class CrazyGenerics {
      *
      * @param <T> – a type of the entity that should be a subclass of {@link BaseEntity}
      */
-    interface ListRepository<T extends BaseEntity> extends CollectionRepository<T, List<T>> { // todo: update interface according to the javadoc
+    interface ListRepository<T extends BaseEntity> extends CollectionRepository<T, List<T>> {
+        // todo: update interface according to the javadoc
     }
 
     /**
@@ -169,8 +170,9 @@ public class CrazyGenerics {
          * @param entities provided collection of entities
          * @return true if at least one of the elements has null id
          */
-        public static boolean hasNewEntities(Collection<BaseEntity> entities) {
-            throw new ExerciseNotCompletedException(); // todo: refactor parameter and implement method
+        public static boolean hasNewEntities(Collection<BaseEntity> entities) { // todo: refactor parameter and implement method
+            return entities.stream()
+                    .anyMatch(e -> e.getUuid() == null);
         }
 
         /**
